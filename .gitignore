@@ -1,0 +1,45 @@
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 🧠 Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+*.sqlite3
+
+# ⚙️ IDE / Editor
+.idea/
+.vscode/
+*.iml
+
+# 🧪 Tests / Coverage
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.mypy_cache/
+
+# 🐳 Docker
+*.pid
+*.log
+
+# 🧩 FastAPI specific
+*.db
+*.sqlite
+*.sqlite3
+
+# 🔒 Secrets
+.env
+
+# 🍎 macOS
+.DS_Store
