@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.security.security import hash_password
+from app.security.security import get_password_hash
 
 def get_user_by_login(db: Session, login: str):
     return db.query(User).filter(User.login == login).first()
@@ -12,16 +12,17 @@ def create_user(db: Session, user_in: UserCreate):
     if existing:
         raise ValueError("User already in the database.")
     
-    hashed_password = hash_password(user_in.password)
+    hashed_password = get_password_hash(user_in.password)
 
     user = User(
         login = user_in.login,
-        hashed_passwordh = hashed_password,
+        password = hashed_password,
         full_name = user_in.full_name,
         birth_date = user_in.birth_date,
         city = user_in.city,
         street = user_in.street,
-        postal_code = user_in.postal_code
+        postal_code = user_in.postal_code,
+        address_email = user_in.address_email
     )
     db.add(user)
     try:

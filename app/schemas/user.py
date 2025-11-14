@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import date, datetime
-from app.utils.validation_utils import validate_text
+from app.validators.user_validators import validate_text, birth_date_validator
 
 class UserBase(BaseModel):
     login: str
@@ -11,36 +11,23 @@ class UserBase(BaseModel):
     street: str
     postal_code: str
     address_email: EmailStr
-    
+
     @field_validator('login')
     def login_validator(cls, v):
         return validate_text(v, field_name='login', min_length=6, max_length=18, alnum=False)
-    
+
     @field_validator('password')
     def password_validator(cls, v):
-        return validate_text(v, field_name='password', min_length=6, max_length=18, alnum=False)
+        return validate_text(v, field_name='password', min_length=6, max_length=1000, alnum=False)
 
     @field_validator('full_name')
     def full_name_validator(cls, v):
         return validate_text(v, field_name='full_name', min_length=6, max_length=150, alnum=False)
-    
+
     @field_validator('birth_date', mode='before')
-    def birth_date_validator(cls, v):
-        if isinstance(v, str):
-            try:
-                v = datetime.strptime(v.strip(), "%Y-%m-%d").date()
-            except ValueError:
-                raise ValueError("Wrong format, try again. (e.g 2000-12-31)")
-        elif not isinstance(v, date):
-            raise ValueError("Birth date must be a valid date.")
+    def validate_birth_date(cls, v):
+        return birth_date_validator(v)
 
-        if v > date.today():
-            raise ValueError("Date cannot be in the future.")
-        if v < date(1900, 1, 1):
-            raise ValueError("Birth date seems too old, please try again.")
-
-        return v
-    
     @field_validator('city')
     def city_validator(cls, v):
         return validate_text(v, field_name='city', min_length=1, max_length=150, alnum=False)
@@ -66,6 +53,6 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: int
-    
+
     class Config:
         from_attributes = True
