@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.session import Base
+from app.models.author import Author
 
 class Book(Base):
     __tablename__ = 'books'
@@ -12,3 +13,4 @@ class Book(Base):
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), nullable=False)
 
     author: Mapped["Author"] = relationship("Author", back_populates="books")
+    rentals = relationship("Rental", back_populates="book")
