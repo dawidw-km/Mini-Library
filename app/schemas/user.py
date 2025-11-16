@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
-from datetime import date, datetime
+from datetime import date
 from app.validators.user_validators import validate_text, birth_date_validator
 
 class UserBase(BaseModel):
@@ -11,6 +11,7 @@ class UserBase(BaseModel):
     street: str
     postal_code: str
     address_email: EmailStr
+    role: str
 
     @field_validator('login')
     def login_validator(cls, v):

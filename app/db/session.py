@@ -16,6 +16,6 @@ def get_db():
     finally:
         db.close()
 
-from app.models import author, book, user
+from app.models import author, book, user, rental
 
 Base.metadata.create_all(bind=engine)

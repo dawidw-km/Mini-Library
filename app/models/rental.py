@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.session import Base
 from datetime import date
@@ -18,4 +18,4 @@ class Rental(Base):
 
     rental_reader: Mapped[User] = relationship("User", foreign_keys=[user_reader_id], back_populates="rental_reader")
     rental_worker: Mapped[User] = relationship("User", foreign_keys=[user_worker_id], back_populates="rental_worker")
-    book: Mapped[Book] = relationship("Book", back_populates="rental")
+    book: Mapped[Book] = relationship("Book", back_populates="rentals")

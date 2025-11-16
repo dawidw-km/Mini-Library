@@ -2,7 +2,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from datetime import date
 from app.db.session import Base
-from app.models.book import Book
 
 class Author(Base):
     __tablename__ = 'authors'
@@ -11,4 +10,4 @@ class Author(Base):
     name: Mapped[str] = mapped_column(nullable=False)
     birth_date: Mapped[date] = mapped_column(nullable=False)
 
-    books: Mapped[List["Book"]] = relationship(back_populates="author")
+    books: Mapped[List["Book"]] = relationship("Book", back_populates="author")
