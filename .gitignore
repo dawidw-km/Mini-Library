@@ -1,4 +1,4 @@
-# 🐍 Python
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -9,37 +9,33 @@ dist/
 build/
 .eggs/
 
-# 🧠 Virtual environments
+# Virtual environments
 venv/
 env/
 ENV/
 .venv/
 .env/
-*.sqlite3
 
-# ⚙️ IDE / Editor
+# Bazy danych / lokalne pliki
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE / Edytory
 .idea/
 .vscode/
 *.iml
 
-# 🧪 Tests / Coverage
+# Testy / Coverage
 .coverage
 .pytest_cache/
 htmlcov/
 .tox/
 .mypy_cache/
 
-# 🐳 Docker
+# Docker / Logi
 *.pid
 *.log
 
-# 🧩 FastAPI specific
-*.db
-*.sqlite
-*.sqlite3
-
-# 🔒 Secrets
-.env
-
-# 🍎 macOS
+# macOS
 .DS_Store
