@@ -22,7 +22,8 @@ def create_user(db: Session, user_in: UserCreate):
         city = user_in.city,
         street = user_in.street,
         postal_code = user_in.postal_code,
-        address_email = user_in.address_email
+        address_email = user_in.address_email,
+        role = user_in.role
     )
     db.add(user)
     try:
