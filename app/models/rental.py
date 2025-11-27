@@ -16,6 +16,17 @@ class Rental(Base):
     user_worker_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     book_id: Mapped[int] = mapped_column(ForeignKey('books.id'))
 
-    rental_reader: Mapped[User] = relationship("User", foreign_keys=[user_reader_id], back_populates="rental_reader")
-    rental_worker: Mapped[User] = relationship("User", foreign_keys=[user_worker_id], back_populates="rental_worker")
-    book: Mapped[Book] = relationship("Book", back_populates="rentals")
+    rental_reader: Mapped[User] = relationship(
+        "User",
+        foreign_keys=[user_reader_id],
+        back_populates="rental_reader"
+    )
+    rental_worker: Mapped[User] = relationship(
+        "User",
+        foreign_keys=[user_worker_id],
+        back_populates="rental_worker"
+    )
+    book: Mapped[Book] = relationship(
+        "Book",
+        back_populates="rentals"
+    )

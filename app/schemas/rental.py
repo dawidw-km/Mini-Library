@@ -1,5 +1,6 @@
 from datetime import date
 from pydantic import BaseModel
+from typing import Optional
 
 
 class Rental(BaseModel):
@@ -9,8 +10,17 @@ class Rental(BaseModel):
     user_worker_id: int
     book_id: int
 
+class RentalPatch(Rental):
+    starting_date: Optional[date] = None
+    ending_date: Optional[date] = None
+    user_reader_id: Optional[int] = None
+    user_worker_id: Optional[int] = None
+    book_id: Optional[int] = None
 
 class RentalCreate(Rental):
+    pass
+
+class RentalUpdate(Rental):
     pass
 
 class RentalRead(Rental):
