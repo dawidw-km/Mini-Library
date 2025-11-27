@@ -10,12 +10,10 @@ class Rental(BaseModel):
     user_worker_id: int
     book_id: int
 
-class RentalPatch(Rental):
+class RentalPatch(BaseModel):
     starting_date: Optional[date] = None
     ending_date: Optional[date] = None
-    user_reader_id: Optional[int] = None
     user_worker_id: Optional[int] = None
-    book_id: Optional[int] = None
 
 class RentalCreate(Rental):
     pass
