@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
+from typing import Optional
 from datetime import date
 from app.validators.user_validators import validate_text, birth_date_validator
 
@@ -52,8 +53,21 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     pass
 
-class UserRead(UserBase):
+class SoftUserDelete(BaseModel):
     id: int
+    is_deleted: bool
+    deleted_at: Optional[date]
+
+class UserRead(BaseModel):
+    id: int
+    login: str
+    full_name: str
+    birth_date: date
+    city: str
+    street: str
+    postal_code: str
+    address_email: EmailStr
+    role: str
 
     class Config:
         from_attributes = True

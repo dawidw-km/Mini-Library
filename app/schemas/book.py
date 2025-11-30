@@ -1,10 +1,13 @@
 from typing import Optional
+from datetime import date
 from pydantic import BaseModel, field_validator
 from app.validators.book_validators import title_validator, pages_validate
 
 class BookBase(BaseModel):
     title: str
     pages: int
+    author_id: Optional[int] = None
+    author_name: Optional[str] = None
 
     @field_validator('title')
     def title_book_validator(cls, v):
@@ -15,9 +18,15 @@ class BookBase(BaseModel):
         return pages_validate(v)
     
 class BookCreate(BookBase):
-    author_id: Optional[int] = None
-    author_name: Optional[str] = None
-    
+    pass
+
+class BookUpdate(BookBase):
+    pass
+
+class SoftBookDelete(BaseModel):
+    is_deleted: bool
+    deleted_at: Optional[date]
+
 class BookRead(BookBase):
     id: int
     author_id: int

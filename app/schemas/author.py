@@ -1,5 +1,6 @@
 from pydantic import BaseModel, field_validator
-from datetime import date, datetime
+from datetime import date
+from typing import Optional
 from app.validators.general import name_validator, birth_date_name_parsed
 from app.validators.author_validators import validate_birth_date
 
@@ -24,8 +25,18 @@ class AuthorBase(BaseModel):
 class AuthorCreate(AuthorBase):
     pass
 
+class AuthorUpdate(AuthorBase):
+    pass
+
+class SoftDeleteAuthor(BaseModel):
+    is_deleted: bool
+    deleted_at: Optional[date]
+
 class AuthorRead(AuthorBase):
     id: int
+    name: str
+    birth_date: date
+
 
     class Config:
         from_attributes = True

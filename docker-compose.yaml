@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: mini-library-db
+    restart: always
+    environment:
+      POSTGRES_USER: odium
+      POSTGRES_DB: test_db
+      POSTGRES_HOST_AUTH_METHOD: trust   # brak hasła
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mini-library-api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql+psycopg2://odium@db:5432/test_db
+      DEBUG: "True"
+      PROJECT_NAME: "FastAPI Library"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app   # DEV – live reload po zmianach plików
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
+volumes:
+  pgdata:

@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from datetime import date
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.rental import Rental
@@ -15,7 +14,7 @@ def create_rentals(rental: RentalCreate, db: Session = Depends(get_db)):
     db.refresh(new_rental)
     return new_rental
 
-@router.put("/{rental_id}", response_model=RentalUpdate)
+@router.put("/", response_model=RentalUpdate)
 def full_update_rental(rental_id: int, rental_data: RentalUpdate, db: Session = Depends(get_db)):
     rental = db.query(Rental).filter(Rental.id == rental_id).first()
 
@@ -32,7 +31,7 @@ def full_update_rental(rental_id: int, rental_data: RentalUpdate, db: Session = 
     db.refresh(rental)
     return rental
 
-@router.patch("/{rental_id}", response_model=RentalPatch)
+@router.patch("/", response_model=RentalPatch)
 def partial_update_rental(rental_id: int, rental_data: RentalPatch, db: Session = Depends(get_db)):
     rental = db.query(Rental).filter(Rental.id == rental_id).first()
 
