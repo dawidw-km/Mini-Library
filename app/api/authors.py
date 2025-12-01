@@ -32,13 +32,15 @@ def read_author(author_id: int, db: Session = Depends(get_db)):
     return author
 
 @router.put("/{author_id}", response_model=AuthorRead)
-def full_update_author(author_id: int, author_data: AuthorUpdate, db: Session = Depends(get_db)):
+def partial_update_author(author_id: int, author_data: AuthorUpdate, db: Session = Depends(get_db)):
     author = db.query(Author).filter(Author.id == author_id).first()
 
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
 
-    for key, value in author_data.dict().items():
+    update_data = author_data.model_dump(exclude_unset=True)
+
+    for key, value in update_data.items():
         setattr(author, key, value)
 
     db.commit()

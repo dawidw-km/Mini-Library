@@ -25,8 +25,22 @@ class AuthorBase(BaseModel):
 class AuthorCreate(AuthorBase):
     pass
 
-class AuthorUpdate(AuthorBase):
-    pass
+
+class AuthorUpdate(BaseModel):
+    name: Optional[str] = None
+    birth_date: Optional[date] = None
+
+    @field_validator('name')
+    def validate_name(cls, v):
+        return name_validator(v)
+
+    @field_validator('birth_date', mode='before')
+    def parsed_b_date(cls, v):
+        return birth_date_name_parsed(v)
+
+    @field_validator('birth_date')
+    def future_date(cls, v):
+        return validate_birth_date(v)
 
 class SoftDeleteAuthor(BaseModel):
     is_deleted: bool

@@ -24,7 +24,7 @@ def full_update_rental(rental_id: int, rental_data: RentalUpdate, db: Session = 
             detail="Rental not found."
         )
     
-    for key, value, in rental_data.dict().items():
+    for key, value, in rental_data.model_dump().items():
         setattr(rental, key, value)
     
     db.commit()
@@ -41,7 +41,7 @@ def partial_update_rental(rental_id: int, rental_data: RentalPatch, db: Session 
             detail="Rental not found."
         )
 
-    update_data = rental_data.dict(exclude_unset=True)
+    update_data = rental_data.model_dump(exclude_unset=True)
 
     if "ending_date" in update_data and update_data["ending_date"] < rental.starting_date:
         raise HTTPException(
