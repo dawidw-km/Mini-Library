@@ -1,49 +1,24 @@
-# Environment
+# Environment files
 .env
 .env.*
 
-# Python
+# Python cache
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-pip-wheel-metadata/
+*.pyc
 
 # Virtual environments
 venv/
-env/
-ENV/
 .venv/
-.env/
 
-# Local DB / cache
-*.sqlite
-*.sqlite3
-*.db
-
-# IDE / editors
+# IDE / Editors
 .idea/
 .vscode/
-*.iml
-*.swp
 
-# Tests / coverage
-.coverage
+# Test / Coverage
 .pytest_cache/
-htmlcov/
-.tox/
 .mypy_cache/
+htmlcov/
 
-# Docker
-docker-compose.override.yml
-*.pid
-*.log
-
-# System
+# System files
 .DS_Store
 Thumbs.db
