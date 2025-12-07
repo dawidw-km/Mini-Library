@@ -12,7 +12,6 @@ class UserBase(BaseModel):
     street: str
     postal_code: str
     address_email: EmailStr
-    role: str
 
     @field_validator('login')
     def login_validator(cls, v):
@@ -52,6 +51,16 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     pass
+
+class UserUpdate(BaseModel):
+    login: Optional[str] = None
+    password: Optional[str] = None
+    full_name: Optional[str] = None
+    birth_date: Optional[date] = None
+    city: Optional[str] = None
+    street: Optional[str] = None
+    postal_code: Optional[str] = None
+    address_email: Optional[EmailStr] = None
 
 class SoftUserDelete(BaseModel):
     id: int

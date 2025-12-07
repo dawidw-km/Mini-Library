@@ -21,3 +21,5 @@ pydantic-settings
 psycopg2-binary
 pydantic[email]
 pwdlib[argon2]
+PyJWT
+python-multipart

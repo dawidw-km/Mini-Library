@@ -6,11 +6,19 @@ from app.db.session import get_db
 from app.models.author import Author
 from app.models.book import Book
 from app.schemas.book import BookCreate, BookRead, SoftBookDelete, BookUpdate
+from app.security.jwt_u import get_current_user
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
 @router.post("/", response_model=BookRead)
-def create_book(book_in: BookCreate, db: Session = Depends(get_db)):
+def create_book(
+        book_in: BookCreate,
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
+
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions.")
 
     if not book_in.author_id and not book_in.author_name:
         raise HTTPException(status_code=400, detail="Provide ID or Name of the author")
@@ -35,19 +43,30 @@ def create_book(book_in: BookCreate, db: Session = Depends(get_db)):
     return book
 
 @router.get("/", response_model=List[BookRead])
-def read_books(db: Session = Depends(get_db)):
+def read_books(
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
     books = db.query(Book).filter(Book.is_deleted == False).all()
 
     return books
 
 @router.put("/", response_model=BookUpdate)
-def update_book(book_id: int, book_in: BookUpdate, db: Session = Depends(get_db)):
+def update_book(
+        book_id: int,
+        book_in: BookUpdate,
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions.")
+
     book = db.query(Book).filter(Book.id == book_id).first()
 
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    for key, value in book_in.dict().items():
+    for key, value in book_in.model_dump().items():
         setattr(book, key, value)
 
     db.commit()
@@ -55,7 +74,14 @@ def update_book(book_id: int, book_in: BookUpdate, db: Session = Depends(get_db)
     return book
 
 @router.delete("/", response_model=SoftBookDelete)
-def delete_book(book_id: int, db: Session = Depends(get_db)):
+def delete_book(
+        book_id: int,
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions.")
+
     book = db.query(Book).filter(Book.id == book_id).first()
 
     if not book:

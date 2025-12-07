@@ -4,6 +4,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     DEBUG: bool = True
     PROJECT_NAME: str = "FastAPI Library"
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     class Config:
         env_file = ".env"

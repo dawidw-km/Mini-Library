@@ -6,10 +6,18 @@ from app.models.author import  Author
 from app.schemas.author import AuthorCreate, AuthorRead, AuthorUpdate, SoftDeleteAuthor
 from app.services.author_services import create_author
 from typing import List
+from app.security.jwt_u import get_current_user
 router = APIRouter(prefix="/authors", tags=["Authors"])
 
 @router.post("/", response_model=AuthorRead)
-def add_author(author: AuthorCreate, db: Session = Depends(get_db)):
+def add_author(
+        author: AuthorCreate
+        , db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+
     try:
         new_author = create_author(db, author)
         return new_author
@@ -17,13 +25,20 @@ def add_author(author: AuthorCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/", response_model=List[AuthorRead])
-def read_authors(db: Session = Depends(get_db)):
+def read_authors(
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
     authors = db.query(Author).filter(Author.is_deleted == False).all()
 
     return authors
 
 @router.get("/{author_id}", response_model=AuthorRead)
-def read_author(author_id: int, db: Session = Depends(get_db)):
+def read_author(
+        author_id: int,
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
     author = db.query(Author).filter(Author.id == author_id).first()
 
     if not author:
@@ -32,8 +47,16 @@ def read_author(author_id: int, db: Session = Depends(get_db)):
     return author
 
 @router.put("/{author_id}", response_model=AuthorRead)
-def partial_update_author(author_id: int, author_data: AuthorUpdate, db: Session = Depends(get_db)):
+def partial_update_author(
+        author_id: int,
+        author_data: AuthorUpdate,
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
     author = db.query(Author).filter(Author.id == author_id).first()
+
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
 
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -48,7 +71,14 @@ def partial_update_author(author_id: int, author_data: AuthorUpdate, db: Session
     return author
 
 @router.delete("/{author_id}", response_model=SoftDeleteAuthor)
-def soft_delete_author(author_id: int, db: Session = Depends(get_db)):
+def soft_delete_author(
+        author_id: int,
+        db: Session = Depends(get_db),
+        current_user = Depends(get_current_user)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+
     author = db.query(Author).filter(Author.id == author_id).first()
 
     if not author:
