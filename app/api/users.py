@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserRead, SoftUserDelete, UserUpdate
-from app.services.user_services import create_user
 from app.security.jwt_u import get_current_user
-
+from app.services.user_api_services import add_user, partial_update_user_service
+from app.services.token_api_services import require_admin
 router = APIRouter(prefix="/users", tags=["users"])
 
 @router.post("/", response_model=UserRead)
@@ -16,14 +16,9 @@ def register_user(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    if current_user != "admin":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
+    require_admin(current_user)
+    return add_user(db, user)
 
-    try:
-        new_user = create_user(db, user)
-        return new_user
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/", response_model=List[UserRead])
 def read_users(
@@ -33,27 +28,15 @@ def read_users(
     users = db.query(User).filter(User.is_deleted == False).all()
     return users
 
-@router.put("/", response_model=UserUpdate)
+@router.patch("/{user_id}", response_model=UserRead)
 def partial_update_user(
         user_id: int,
         user_data: UserUpdate,
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    if current_user != "admin":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-
-    user = db.query(User).filter(User.id == user_id).first()
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    for key, value in user_data.model_dump().items():
-        setattr(user, key, value)
-
-    db.commit()
-    db.refresh(user)
-    return user
+    require_admin(current_user)
+    return partial_update_user_service(db, user_id, user_data)
 
 
 @router.delete("/{id}", response_model=SoftUserDelete)
@@ -62,7 +45,7 @@ def soft_user_delete(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    if current_user != "admin":
+    if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     user = db.query(User).filter(User.id == id).first()
