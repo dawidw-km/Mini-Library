@@ -5,7 +5,7 @@ from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserRead, SoftUserDelete, UserUpdate
 from app.security.jwt_u import get_current_user
-from app.services.user_api_services import add_user, partial_update_user_service, delete_user
+from app.services.user_api_services import add_user, partial_update_user_service, delete_user, read_user_services
 from app.services.token_api_services import require_admin
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -23,8 +23,7 @@ def read_users(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
     ):
-    users = db.query(User).filter(User.is_deleted == False).all()
-    return users
+    return read_user_services(db)
 
 @router.patch("/{user_id}", response_model=UserRead)
 def partial_update_user(

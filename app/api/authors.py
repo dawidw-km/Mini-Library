@@ -5,6 +5,7 @@ from app.models.author import  Author
 from app.schemas.author import AuthorCreate, AuthorRead, AuthorUpdate, SoftDeleteAuthor
 from app.services.token_api_services import require_admin
 from app.services.authors_api_services import add_author, get_author, partial_author_update_service, soft_delete_author
+from app.services.authors_api_services import read_author_service
 from typing import List
 from app.security.jwt_u import get_current_user
 router = APIRouter(prefix="/authors", tags=["Authors"])
@@ -23,9 +24,7 @@ def read_all_authors(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    authors = db.query(Author).filter(Author.is_deleted == False).all()
-
-    return authors
+    read_author_service(db)
 
 @router.get("/{author_id}", response_model=AuthorRead)
 def read_one_author(

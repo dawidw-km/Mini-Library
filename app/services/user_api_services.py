@@ -5,6 +5,12 @@ from app.schemas.user import UserUpdate
 from app.models.user import User
 from app.services.user_services import create_user
 
+def read_user_services(
+        db: Session
+):
+    users = db.query(User).filter(User.is_deleted == False).all()
+    return users
+
 def add_user(
         db,
         user

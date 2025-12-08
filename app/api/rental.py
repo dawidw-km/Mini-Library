@@ -6,7 +6,7 @@ from app.models.rental import Rental
 from app.schemas.rental import RentalCreate, RentalRead, RentalPatch
 from app.services.token_api_services import require_admin
 from app.services.rental_api_services import rental_partial_update_services, rental_soft_delete_services
-from app.services.rental_api_services import add_rental_services
+from app.services.rental_api_services import add_rental_services, read_rental_services
 from app.security.jwt_u import get_current_user
 
 router = APIRouter(prefix="/rental", tags=["Rental"])
@@ -16,9 +16,7 @@ def read_rentals(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    rentals = db.query(Rental).all()
-
-    return rentals
+    return read_rental_services(db)
 
 @router.post("/", response_model=RentalRead)
 def create_rentals(

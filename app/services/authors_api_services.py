@@ -5,6 +5,12 @@ from app.schemas.author import AuthorUpdate
 from app.services.author_services import create_author
 from app.models.author import Author
 
+def read_author_service(
+        db: Session
+):
+    authors = db.query(Author).filter(Author.is_deleted == False).all()
+    return authors
+
 def add_author(
         db,
         author

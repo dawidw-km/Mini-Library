@@ -4,6 +4,12 @@ from datetime import date
 from app.models.rental import Rental
 from app.schemas.rental import RentalPatch, RentalCreate
 
+def read_rental_services(
+        db: Session
+):
+    rentals = db.query(Rental).filter(Rental.is_deleted == False).all()
+    return rentals
+
 def add_rental_services(
         db: Session,
         rental: RentalCreate

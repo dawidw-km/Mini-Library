@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends
 from typing import List
 from sqlalchemy.orm import Session
 from app.db.session import get_db
-from app.models.book import Book
 from app.schemas.book import BookCreate, BookRead, SoftBookDelete, BookUpdate
 from app.services.token_api_services import require_admin
 from app.services.books_api_services import add_book, partial_update_book_service, soft_delete_book_service
+from app.services.books_api_services import read_book_service
 from app.security.jwt_u import get_current_user
 
 router = APIRouter(prefix="/books", tags=["Books"])
@@ -24,9 +24,7 @@ def read_books(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    books = db.query(Book).filter(Book.is_deleted == False).all()
-
-    return books
+  read_book_service(db)
 
 @router.patch("/", response_model=BookUpdate)
 def partial_update_book(

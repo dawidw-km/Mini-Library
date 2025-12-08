@@ -5,6 +5,11 @@ from app.models.book import Book
 from app.schemas.book import BookUpdate
 from app.services.books_services import create_book
 
+def read_book_service(
+        db: Session,
+):
+    books = db.query(Book).filter(Book.is_deleted == False).all()
+    return books
 
 def add_book(
         db,
