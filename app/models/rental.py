@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Date, Boolean
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.session import Base
 from datetime import date
@@ -11,6 +11,9 @@ class Rental(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     starting_date: Mapped[date] = mapped_column(nullable=False)
     ending_date: Mapped[date] = mapped_column(nullable=False)
+
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[date] = mapped_column(Date, default=None, nullable=True)
 
     user_reader_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     user_worker_id: Mapped[int] = mapped_column(ForeignKey('users.id'))

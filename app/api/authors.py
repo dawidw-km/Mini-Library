@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from datetime import date
 from app.db.session import get_db
 from app.models.author import  Author
 from app.schemas.author import AuthorCreate, AuthorRead, AuthorUpdate, SoftDeleteAuthor
-from app.services.author_services import create_author
+from app.services.token_api_services import require_admin
+from app.services.authors_api_services import add_author, get_author, partial_author_update_service, soft_delete_author
 from typing import List
 from app.security.jwt_u import get_current_user
 router = APIRouter(prefix="/authors", tags=["Authors"])
@@ -15,17 +15,11 @@ def add_author(
         , db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-
-    try:
-        new_author = create_author(db, author)
-        return new_author
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    require_admin(current_user)
+    return add_author(db, author)
 
 @router.get("/", response_model=List[AuthorRead])
-def read_authors(
+def read_all_authors(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
@@ -34,41 +28,22 @@ def read_authors(
     return authors
 
 @router.get("/{author_id}", response_model=AuthorRead)
-def read_author(
+def read_one_author(
         author_id: int,
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    author = db.query(Author).filter(Author.id == author_id).first()
+    return get_author(db, author_id)
 
-    if not author:
-        raise HTTPException(status_code=404, detail="Author not found")
-
-    return author
-
-@router.put("/{author_id}", response_model=AuthorRead)
+@router.patch("/{author_id}", response_model=AuthorRead)
 def partial_update_author(
         author_id: int,
         author_data: AuthorUpdate,
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    author = db.query(Author).filter(Author.id == author_id).first()
-
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-
-    if not author:
-        raise HTTPException(status_code=404, detail="Author not found")
-
-    update_data = author_data.model_dump(exclude_unset=True)
-
-    for key, value in update_data.items():
-        setattr(author, key, value)
-
-    db.commit()
-    db.refresh(author)
-    return author
+    require_admin(current_user)
+    return partial_author_update_service(db, author_id, author_data)
 
 @router.delete("/{author_id}", response_model=SoftDeleteAuthor)
 def soft_delete_author(
@@ -76,18 +51,6 @@ def soft_delete_author(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-
-    author = db.query(Author).filter(Author.id == author_id).first()
-
-    if not author:
-        raise HTTPException(status_code=404, detail="Author not found")
-
-    author.is_deleted = True
-    author.deleted_at = date.today()
-
-    db.commit()
-    db.refresh(author)
-    return author
+    require_admin(current_user)
+    return soft_delete_author(db, author_id)
 

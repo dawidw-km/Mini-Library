@@ -11,10 +11,8 @@ def create_author(db: Session, author_in: AuthorCreate):
     if existing:
         raise ValueError("Author with that name already exists.")
     
-    author = Author(
-        name = author_in.name,
-        birth_date = author_in.birth_date
-    )
+    author = Author(**author_in.model_dump())
+
     db.add(author)
     try:
         db.commit()
@@ -24,3 +22,5 @@ def create_author(db: Session, author_in: AuthorCreate):
     
     db.refresh(author)
     return author
+
+
