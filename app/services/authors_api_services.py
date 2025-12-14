@@ -11,7 +11,7 @@ def read_author_service(
     authors = db.query(Author).filter(Author.is_deleted == False).all()
     return authors
 
-def add_author(
+def add_author_service(
         db,
         author
 ):
@@ -22,11 +22,11 @@ def add_author(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-def get_author(
+def get_author_service(
         db: Session,
         author_id: int
 ):
-    author = db.query(Author).filter(Author.id == author_id).first()
+    author = db.query(Author).filter(Author.id == author_id, Author.is_deleted == False).first()
 
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -54,7 +54,7 @@ def partial_author_update_service(
     return author
 
 
-def soft_delete_author(
+def soft_delete_author_service(
         db: Session,
         author_id: int
 ):

@@ -11,7 +11,18 @@ def read_book_service(
     books = db.query(Book).filter(Book.is_deleted == False).all()
     return books
 
-def add_book(
+def get_single_book_service(
+        db: Session,
+        book_id: int
+):
+    book = db.query(Book).filter(Book.id == book_id, Book.is_deleted == False).first()
+
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    return book
+
+def add_book_service(
         db,
         book
 ):

@@ -12,15 +12,15 @@ class AuthorBase(BaseModel):
     @field_validator('name')
     def validate_name(cls, v):
         return name_validator(v)
-    
+
     @field_validator('birth_date', mode='before')
     def parsed_b_date(cls, v):
         return birth_date_name_parsed(v)
 
-    
     @field_validator('birth_date')
     def future_date(cls, v):
         return validate_birth_date(v)
+
 
 class AuthorCreate(AuthorBase):
     pass
@@ -42,16 +42,11 @@ class AuthorUpdate(BaseModel):
     def future_date(cls, v):
         return validate_birth_date(v)
 
-class SoftDeleteAuthor(BaseModel):
-    is_deleted: bool
-    deleted_at: Optional[date]
 
 class AuthorRead(AuthorBase):
     id: int
     name: str
     birth_date: date
 
-
     class Config:
         from_attributes = True
-

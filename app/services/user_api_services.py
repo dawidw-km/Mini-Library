@@ -5,13 +5,13 @@ from app.schemas.user import UserUpdate
 from app.models.user import User
 from app.services.user_services import create_user
 
-def read_user_services(
+def read_user_service(
         db: Session
 ):
     users = db.query(User).filter(User.is_deleted == False).all()
     return users
 
-def add_user(
+def add_user_service(
         db,
         user
 ):
@@ -39,7 +39,7 @@ def partial_update_user_service(
     db.refresh(user)
     return user
 
-def delete_user(
+def delete_user_service(
         db: Session,
         user_id: int
 ):

@@ -62,10 +62,6 @@ class UserUpdate(BaseModel):
     postal_code: Optional[str] = None
     address_email: Optional[EmailStr] = None
 
-class SoftUserDelete(BaseModel):
-    id: int
-    is_deleted: bool
-    deleted_at: Optional[date]
 
 class UserRead(BaseModel):
     id: int

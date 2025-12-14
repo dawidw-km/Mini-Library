@@ -23,9 +23,6 @@ class BookCreate(BookBase):
 class BookUpdate(BookBase):
     pass
 
-class SoftBookDelete(BaseModel):
-    is_deleted: bool
-    deleted_at: Optional[date]
 
 class BookRead(BookBase):
     id: int

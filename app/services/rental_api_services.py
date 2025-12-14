@@ -3,12 +3,24 @@ from sqlalchemy.orm import Session
 from datetime import date
 from app.models.rental import Rental
 from app.schemas.rental import RentalPatch, RentalCreate
+from app.models.user import User
 
 def read_rental_services(
         db: Session
 ):
     rentals = db.query(Rental).filter(Rental.is_deleted == False).all()
     return rentals
+
+def get_rental_by_user_name(
+        db: Session,
+        user_full_name: str
+):
+    user = db.query(User).filter(User.full_name == user_full_name, User.is_deleted == False).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return db.query(Rental).filter(Rental.user_reader_id == user.id, Rental.is_deleted == False).first()
 
 def add_rental_services(
         db: Session,
