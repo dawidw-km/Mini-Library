@@ -5,24 +5,13 @@ from app.models.rental import Rental
 from app.schemas.rental import RentalPatch, RentalCreate
 from app.models.user import User
 
-def read_rental_services(
+def read_rental_service(
         db: Session
 ):
     rentals = db.query(Rental).filter(Rental.is_deleted == False).all()
     return rentals
 
-def get_rental_by_user_name(
-        db: Session,
-        user_full_name: str
-):
-    user = db.query(User).filter(User.full_name == user_full_name, User.is_deleted == False).first()
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return db.query(Rental).filter(Rental.user_reader_id == user.id, Rental.is_deleted == False).first()
-
-def add_rental_services(
+def add_rental_service(
         db: Session,
         rental: RentalCreate
 ):
@@ -32,7 +21,7 @@ def add_rental_services(
     db.refresh(new_rental)
     return new_rental
 
-def rental_partial_update_services(
+def rental_partial_update_service(
         db: Session,
         rental_id: int,
         rental_data: RentalPatch
@@ -60,7 +49,7 @@ def rental_partial_update_services(
     db.refresh(rental)
     return rental
 
-def rental_soft_delete_services(
+def rental_soft_delete_service(
         db: Session,
         rental_id: int
 ):
@@ -71,6 +60,25 @@ def rental_soft_delete_services(
 
     rental.is_deleted = True
     rental.deleted_at = date.today()
+
+    db.commit()
+    db.refresh(rental)
+    return rental
+
+def rental_return_book_service(
+        db: Session,
+        rental_id: int
+):
+    rental = db.query(Rental).filter(
+        Rental.id == rental_id,
+        Rental.is_deleted == False,
+        Rental.return_date == None
+    ).first()
+
+    if not rental:
+        raise HTTPException(status_code=404, detail="Rental is not active or does not exist.")
+
+    rental.return_date = date.today()
 
     db.commit()
     db.refresh(rental)

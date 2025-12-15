@@ -2,7 +2,7 @@ from datetime import datetime, date
 
 def name_validator(v: str) ->str:
     """
-    Ensures that name is not empty and has proper lenght.
+    Ensures that name is not empty and has proper length.
     """
     v = v.strip()
     if not v:

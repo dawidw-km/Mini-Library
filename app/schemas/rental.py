@@ -4,25 +4,25 @@ from typing import Optional
 
 
 class Rental(BaseModel):
+    id: int
     starting_date: date
     ending_date: date
+    return_date: Optional[date] = None
     user_reader_id: int
     user_worker_id: int
     book_id: int
 
 class RentalPatch(BaseModel):
-    starting_date: Optional[date] = None
-    ending_date: Optional[date] = None
+    return_date: Optional[date] = None
     user_worker_id: Optional[int] = None
 
-class RentalCreate(Rental):
-    pass
-
-class RentalUpdate(Rental):
-    pass
+class RentalCreate(BaseModel):
+    user_reader_id: int
+    user_worker_id: int
+    book_id: int
 
 class RentalRead(Rental):
-    id: int
+    pass
 
     class Config:
         from_attributes = True

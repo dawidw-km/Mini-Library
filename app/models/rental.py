@@ -11,6 +11,7 @@ class Rental(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     starting_date: Mapped[date] = mapped_column(nullable=False)
     ending_date: Mapped[date] = mapped_column(nullable=False)
+    return_date: Mapped[date] = mapped_column(nullable=True)
 
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     deleted_at: Mapped[date] = mapped_column(Date, default=None, nullable=True)
