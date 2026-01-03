@@ -1,6 +1,5 @@
 from typing import Optional
-from datetime import date
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict
 from app.validators.book_validators import title_validator, pages_validate
 
 class BookBase(BaseModel):
@@ -28,5 +27,6 @@ class BookRead(BookBase):
     id: int
     author_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )

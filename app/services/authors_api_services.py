@@ -39,7 +39,7 @@ def partial_author_update_service(
         author_id: int,
         author_data: AuthorUpdate
 ):
-    author = db.query(Author).filter(Author.id == author_id).first()
+    author = db.query(Author).filter(Author.id == author_id, Author.is_deleted == False).first()
 
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -58,7 +58,7 @@ def soft_delete_author_service(
         db: Session,
         author_id: int
 ):
-    author = db.query(Author).filter(Author.id == author_id).first()
+    author = db.query(Author).filter(Author.id == author_id, Author.is_deleted == False).first()
 
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")

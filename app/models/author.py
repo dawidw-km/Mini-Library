@@ -2,7 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Boolean, Date
 from typing import List, Optional
 from datetime import date
-from app.db.session import Base
+from app.db.base import Base
 
 class Author(Base):
     __tablename__ = 'authors'

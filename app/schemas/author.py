@@ -1,8 +1,9 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict, model_validator
 from datetime import date
 from typing import Optional
-from app.validators.general import name_validator, birth_date_name_parsed
+from app.validators.general import name_validator, update_validator
 from app.validators.author_validators import validate_birth_date
+
 
 
 class AuthorBase(BaseModel):
@@ -12,10 +13,6 @@ class AuthorBase(BaseModel):
     @field_validator('name')
     def validate_name(cls, v):
         return name_validator(v)
-
-    @field_validator('birth_date', mode='before')
-    def parsed_b_date(cls, v):
-        return birth_date_name_parsed(v)
 
     @field_validator('birth_date')
     def future_date(cls, v):
@@ -34,13 +31,14 @@ class AuthorUpdate(BaseModel):
     def validate_name(cls, v):
         return name_validator(v)
 
-    @field_validator('birth_date', mode='before')
-    def parsed_b_date(cls, v):
-        return birth_date_name_parsed(v)
-
     @field_validator('birth_date')
     def future_date(cls, v):
         return validate_birth_date(v)
+
+    @model_validator(mode="after")
+    def validate_model(self):
+        update_validator(self)
+        return self
 
 
 class AuthorRead(AuthorBase):
@@ -48,5 +46,6 @@ class AuthorRead(AuthorBase):
     name: str
     birth_date: date
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )

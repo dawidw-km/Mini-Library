@@ -51,4 +51,3 @@ def soft_delete_author(
 ):
     require_admin(current_user)
     soft_delete_author_service(db, author_id)
-

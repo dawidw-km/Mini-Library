@@ -15,5 +15,5 @@ app.include_router(rental.router)
 app.include_router(token.router)
 
 @app.get("/")
-def root():
-    return {"message": "Result"}
+async def root():
+    return {"Welcome to the Library!": ":)"}

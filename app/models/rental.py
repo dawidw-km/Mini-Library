@@ -1,6 +1,6 @@
 from sqlalchemy import ForeignKey, Date, Boolean
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from app.db.session import Base
+from app.db.base import Base
 from datetime import date
 from app.models.book import Book
 from app.models.user import User

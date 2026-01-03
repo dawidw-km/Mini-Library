@@ -1,13 +1,14 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
-
 engine = create_engine(settings.DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
-class Base(DeclarativeBase):
-    pass
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 def get_db():
     db = SessionLocal()
@@ -15,7 +16,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-from app.models import author, book, user, rental
-
-Base.metadata.create_all(bind=engine)

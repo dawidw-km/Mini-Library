@@ -1,7 +1,7 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 from typing import Optional
 from datetime import date
-from app.validators.user_validators import validate_text, birth_date_validator
+from app.validators.user_validators import validate_text
 
 class UserBase(BaseModel):
     login: str
@@ -24,10 +24,6 @@ class UserBase(BaseModel):
     @field_validator('full_name')
     def full_name_validator(cls, v):
         return validate_text(v, field_name='full_name', min_length=6, max_length=150, alnum=False)
-
-    @field_validator('birth_date', mode='before')
-    def validate_birth_date(cls, v):
-        return birth_date_validator(v)
 
     @field_validator('city')
     def city_validator(cls, v):
@@ -74,5 +70,6 @@ class UserRead(BaseModel):
     address_email: EmailStr
     role: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
