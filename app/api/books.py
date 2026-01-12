@@ -21,16 +21,14 @@ def create_book(
 
 @router.get("/", response_model=List[BookRead])
 def read_all_books(
-        db: Session = Depends(get_db),
-        current_user = Depends(get_current_user)
+        db: Session = Depends(get_db)
 ):
     return read_book_service(db)
 
 @router.get("/{book_id}", response_model=BookRead)
 def read_one_book(
         book_id: int,
-        db: Session = Depends(get_db),
-        current_user = Depends(get_current_user)
+        db: Session = Depends(get_db)
 ):
     return get_single_book_service(db, book_id)
 

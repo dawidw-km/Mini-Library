@@ -20,16 +20,14 @@ def create_author(
 
 @router.get("/", response_model=List[AuthorRead])
 def read_all_authors(
-        db: Session = Depends(get_db),
-        current_user = Depends(get_current_user)
-):
+        db: Session = Depends(get_db)
+        ):
     return read_author_service(db)
 
 @router.get("/{author_id}", response_model=AuthorRead)
 def read_one_author(
         author_id: int,
-        db: Session = Depends(get_db),
-        current_user = Depends(get_current_user)
+        db: Session = Depends(get_db)
 ):
     return get_author_service(db, author_id)
 

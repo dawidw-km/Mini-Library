@@ -13,7 +13,6 @@ router = APIRouter(prefix="/users", tags=["users"])
 def register_user(
         user: UserCreate,
         db: Session = Depends(get_db),
-        current_user = Depends(get_current_user)
 ):
     return add_user_service(db, user)
 
@@ -22,6 +21,7 @@ def read_all_users(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
     ):
+    require_admin(current_user)
     return read_user_service(db)
 
 @router.patch("/{user_id}", response_model=UserRead)
