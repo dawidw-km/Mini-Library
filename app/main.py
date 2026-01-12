@@ -1,6 +1,10 @@
+from sqlalchemy.exc import OperationalError
+from time import time
 from fastapi import FastAPI
 from app.api import authors, books, users, rental, token
-from app.security.auth import authenticate_user
+from app.db.session import SessionLocal
+from app.db.seed import seed_admin
+
 
 app = FastAPI(title="FastAPI Library")
 
