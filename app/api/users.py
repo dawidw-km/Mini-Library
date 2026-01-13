@@ -42,4 +42,3 @@ def soft_user_delete(
 ):
     require_admin(current_user)
     delete_user_service(db, user_id)
-
