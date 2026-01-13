@@ -16,7 +16,6 @@ def create_rental(
         db: Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    require_admin(current_user)
     return add_rental_service(db, rental)
 
 @router.get("/", response_model=List[RentalRead])

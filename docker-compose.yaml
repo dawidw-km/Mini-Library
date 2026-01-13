@@ -28,6 +28,8 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+    volumes:
+      - .:/app
     command: alembic upgrade head
 
   seed:
@@ -59,6 +61,8 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
     ports:
       - "8000:8000"
+    volumes:
+     - .:/app
     command: >
       uvicorn app.main:app
       --host 0.0.0.0

@@ -43,3 +43,7 @@ seed:
 
 ## First-time full build
 full-build: build up
+
+## Create new migration from model changes
+revision:
+	$(COMPOSE) exec api alembic revision --autogenerate -m "$(msg)"
