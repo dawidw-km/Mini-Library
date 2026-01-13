@@ -1,21 +1,31 @@
+import re
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from datetime import date
+from datetime import date, timedelta
 from app.models.rental import Rental
-from app.schemas.rental import RentalPatch, RentalCreate
+from app.schemas.rental import RentalPatch, RentalCreate, RentalReturn
 from app.models.user import User
 
 def read_rental_service(
         db: Session
 ):
     rentals = db.query(Rental).filter(Rental.is_deleted == False).all()
-    return rentals
+    return rentals  
 
 def add_rental_service(
         db: Session,
         rental: RentalCreate
-):
-    new_rental = Rental(**rental.model_dump())
+    ):
+    existing_rental = db.query(Rental).filter(Rental.book_id == rental.book_id, Rental.is_rented == True).first()
+    if existing_rental:
+        raise HTTPException(status_code=409, detail="Book already rented")
+      
+    new_rental = Rental(
+        **rental.model_dump(),
+        is_rented=True,
+        starting_date=date.today(),
+        ending_date=date.today() + timedelta(days=14)
+        )
     db.add(new_rental)
     db.commit()
     db.refresh(new_rental)
@@ -67,7 +77,8 @@ def rental_soft_delete_service(
 
 def rental_return_book_service(
         db: Session,
-        rental_id: int
+        rental_id: int,
+        data: RentalReturn
 ):
     rental = db.query(Rental).filter(
         Rental.id == rental_id,
@@ -79,7 +90,10 @@ def rental_return_book_service(
         raise HTTPException(status_code=404, detail="Rental is not active or does not exist.")
 
     rental.return_date = date.today()
+    rental.is_rented = False
+    rental.user_worker_id = data.user_worker_id
 
-    db.commit()
+    
+    db.commit() 
     db.refresh(rental)
     return rental

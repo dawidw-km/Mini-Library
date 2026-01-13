@@ -8,8 +8,9 @@ class Rental(BaseModel):
     starting_date: date
     ending_date: date
     return_date: Optional[date] = None
+    is_rented: bool
     user_reader_id: int
-    user_worker_id: int
+    user_worker_id: Optional[int] = None
     book_id: int
 
 class RentalPatch(BaseModel):
@@ -18,8 +19,10 @@ class RentalPatch(BaseModel):
 
 class RentalCreate(BaseModel):
     user_reader_id: int
-    user_worker_id: int
     book_id: int
+    
+class RentalReturn(BaseModel):
+    user_worker_id: int
 
 class RentalRead(Rental):
     pass

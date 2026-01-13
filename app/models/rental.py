@@ -13,11 +13,12 @@ class Rental(Base):
     ending_date: Mapped[date] = mapped_column(nullable=False)
     return_date: Mapped[date] = mapped_column(nullable=True)
 
+    is_rented: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     deleted_at: Mapped[date] = mapped_column(Date, default=None, nullable=True)
 
     user_reader_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    user_worker_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    user_worker_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=True)
     book_id: Mapped[int] = mapped_column(ForeignKey('books.id'))
 
     rental_reader: Mapped[User] = relationship(
