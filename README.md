@@ -10,6 +10,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
+        <li><a href="#built-with">Built With</a></li>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
@@ -43,6 +44,19 @@ Mini-Library is a simple management application that allows:
 ## Getting Started
     
 Follow the instructions below to run the project locally.
+
+### Built With
+
+ - Python
+ - Docker
+ - FastAPI
+ - PostgreSQL
+ - SQLAlchemy
+ - Alembic
+ - JWT (Json Web Token) authentication
+ - pwdlib for password hashing
+ - Pytest
+ - Makefile
 
 ### Prerequisites
 
